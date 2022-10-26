@@ -7,9 +7,8 @@ class HTTP extends Health {
         $this->endpoint = $endpoint;
     }
 
-    // Simple, configurable, unopinionated (response format)
     function run(Host $host): mixed {
-        // HTTP request
+        // TODO: Send HTTP request (to $this->endpoint and $host->getHostname())
         return null;
     }
 }

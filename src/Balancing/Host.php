@@ -26,4 +26,8 @@ class Host {
     public function getState(): mixed {
         return $this->state;
     }
+
+    public function getHostname(): string {
+        return $this->hostname;
+    }
 }
