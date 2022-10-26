@@ -1,14 +1,26 @@
 <?php
 
-class HTTP extends Health {
+namespace Utopia\Balancing\Health;
+
+use Utopia\Balancing\Health;
+use Utopia\Balancing\Host;
+
+class HTTP extends Health
+{
     private string $endpoint;
 
-    function __construct(string $endpoint = '/') {
+    public function __construct(string $endpoint = '/')
+    {
         $this->endpoint = $endpoint;
     }
 
-    function run(Host $host): mixed {
-        // TODO: Send HTTP request (to $this->endpoint and $host->getHostname())
+    /**
+     * @return ?mixed[]
+     */
+    public function run(Host $host): ?array
+    {
+        $url = $this->endpoint . $host->getHostname();
+        // TODO: Send HTTP request
         return null;
     }
 }

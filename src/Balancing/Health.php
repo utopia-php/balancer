@@ -1,5 +1,11 @@
 <?php
 
-abstract class Health {
-    abstract function run(Host $host): mixed;
+namespace Utopia\Balancing;
+
+abstract class Health
+{
+    /**
+     * @return ?mixed[]
+     */
+    abstract public function run(Host $host): ?array;
 }

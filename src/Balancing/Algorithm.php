@@ -1,7 +1,12 @@
 <?php
 
-abstract class Algorithm {
-    // @param $hosts Host[]
-    // @param $extra mixed[]
-    abstract function run(array $hosts, array $extra): Host;
+namespace Utopia\Balancing;
+
+abstract class Algorithm
+{
+    /**
+     * @param Host[] $hosts
+     * @param ?mixed[] $extra
+     */
+    abstract public function run(array $hosts, ?array $extra): Host;
 }
