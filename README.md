@@ -11,13 +11,18 @@ $algo = new Random();
 $algo = new RoundRobin();
 $algo = new CPU();
 
-$balancing = new Balancing($cache, $algo, 10000);
+$balancing = new Balancing($cache, $algo);
 
 $health = new HTTP('/v1/health');
 
 $balancing
     ->addHost(new Host('executor-001', $health)) // Will pull health. If no Cache, it will still store in-memory by design
     ->addHost(new Host('executor-002')); // No health provided, it will be pulling from Cache. If no Cache, then no pulling
+
+// Swoole timer
+Timer::tick(10000, function (int $timerId) use ($balancing) {
+    $balancing->checkHealth();
+});
 
 $extra = [ 'containerId' => 'project1-function1' ];
 $balancing->run($extra);
