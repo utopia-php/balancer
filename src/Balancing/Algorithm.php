@@ -5,8 +5,7 @@ namespace Utopia\Balancing;
 abstract class Algorithm
 {
     /**
-     * @param Host[] $hosts
-     * @param ?mixed[] $extra
+     * @param Option[] $options
      */
-    abstract public function run(array $hosts, ?array $extra): Host;
+    abstract public function run(array $options): Option;
 }

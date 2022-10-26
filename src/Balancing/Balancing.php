@@ -2,61 +2,50 @@
 
 namespace Utopia\Balancing;
 
-use Utopia\Cache\Cache;
-
 class Balancing
 {
-    private ?Cache $cache;
-
     private Algorithm $algo;
 
     /**
-     * @var Host[]
+     * @var callable[]
      */
-    private array $hosts = [];
+    private array $filters;
 
-    public function __construct(Algorithm $algo, ?Cache $cache)
+    /**
+     * @var Option[]
+     */
+    private array $options = [];
+
+    public function __construct(Algorithm $algo)
     {
-        $this->cache = $cache;
         $this->algo = $algo;
     }
 
-    public function checkHealth(): void {
-        foreach ($this->hosts as $host) {
-            if (! empty($host->getHealth())) {
-                $host->fetchHealth();
-
-                if (! empty($this->cache)) {
-                    $this->cache->save($host->getHostname(), [
-                        'online' => $host->getOnline(),
-                        'state' => $host->getState(),
-                    ]);
-                }
-            } else {
-                if (! empty($this->cache)) {
-                    $data = $this->cache->load($host->getHostname(), 60 * 60); // 1 hour
-                    $data = $data ? (array) $data : [];
-
-                    $host
-                        ->setOnline((bool) ($data['online'] ?? false))
-                        ->setState((array) ($data['state'] ?? []));
-                }
-            }
-        }
-    }
-
-    public function addHost(Host $host): self
+    public function addOption(Option $option): self
     {
-        $this->hosts[] = $host;
-
+        $this->options[] = $option;
         return $this;
     }
 
-    /**
-     * @param ?mixed[] $extra
-     */
-    public function run(?array $extra): Host
+    public function addFilter(callable $filter): self
     {
-        return $this->algo->run($this->hosts, $extra);
+        $this->filters[] = $filter;
+        return $this;
+    }
+
+    public function run(): Option
+    {
+        $options = $this->options;
+
+        foreach ($this->filters as $filter) {
+            $options = \array_filter($options, $filter);
+        }
+
+        // TODO: In future allow throwing exception instead of fallback
+        if(\count($options) === 0) {
+            $options = $this->options;
+        }
+
+        return $this->algo->run($options);
     }
 }

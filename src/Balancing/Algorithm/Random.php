@@ -3,17 +3,16 @@
 namespace Utopia\Balancing\Algorithm;
 
 use Utopia\Balancing\Algorithm;
-use Utopia\Balancing\Host;
+use Utopia\Balancing\Option;
 
 class Random extends Algorithm
 {
     /**
-     * @param Host[] $hosts
-     * @param ?mixed[] $extra
+     * @param Option[] $options
      */
-    public function run(array $hosts, ?array $extra): Host
+    public function run(array $options): Option
     {
-        // TODO: Pick random (from $hosts)
-        return $hosts[0];
+        // TODO: Pick random (from $options)
+        return $options[0];
     }
 }

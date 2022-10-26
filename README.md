@@ -5,27 +5,19 @@
 ```php
 <?php
 
-$cache = new Cache(new Redis()); // Uses utopia-php/cache - allows many adapters
+$cpu = new CPU();
 
-$algo = new Random();
-$algo = new RoundRobin();
-$algo = new CPU();
+$cpu
+    ->setHostPriority(0.3)
+    ->setVirtualPriority(0.6);
 
-$balancing = new Balancing($cache, $algo);
+$balancing = new Balancing($algo);
 
-$health = new HTTP('/v1/health');
+$balancing->addFilter(fn(Option $option) => $option->getState('cpu', 0) < 80);
 
 $balancing
-    ->addHost(new Host('executor-001', $health)) // Will pull health. If no Cache, it will still store in-memory by design
-    ->addHost(new Host('executor-002')); // No health provided, it will be pulling from Cache. If no Cache, then no pulling
-
-// Swoole timer
-Timer::tick(10000, function (int $timerId) use ($balancing) {
-    $balancing->checkHealth();
-});
-
-$extra = [ 'containerId' => 'project1-function1' ];
-$balancing->run($extra);
-
-// TODO: Prepare filters (such as Filter/Online, Filter/HighCPU, ...), and see how to add them to algos
+    ->addOption(new Option([ 'cpu', 99 ]))
+    ->addOption(new Option([ 'cpu', 20 ]))
+    ->addOption(new Option([ 'cpu', 65 ]))
+    ->run();
 ```
