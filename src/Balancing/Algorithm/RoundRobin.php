@@ -24,6 +24,12 @@ class RoundRobin extends Algorithm
         return $this->index;
     }
 
+    public function setIndex(int $lastIndex): self
+    {
+        $this->index = $lastIndex;
+        return $this;
+    }
+
     /**
      * @param Option[] $options
      */

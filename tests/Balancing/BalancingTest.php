@@ -96,6 +96,9 @@ class BalancingTest extends TestCase
         $algo = new RoundRobin(1);
         $option = $algo->run($options) ?? new Option([]);
         $this->assertEquals("lon-1", $option->getState('dataCenter'));
+        $algo->setIndex(0);
+        $option = $algo->run($options) ?? new Option([]);
+        $this->assertEquals("fra-2", $option->getState('dataCenter'));
     }
 
     public function testOption(): void
