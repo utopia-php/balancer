@@ -1,6 +1,6 @@
 # Utopia Balancing
 
-[![Build Status](https://github.com/utopia-php/balancing/actions/workflows/tester.yml/badge.svg)
+![Build Status](https://github.com/utopia-php/balancing/actions/workflows/tester.yml/badge.svg)
 ![Total Downloads](https://img.shields.io/packagist/dt/utopia-php/database.svg)
 [![Discord](https://img.shields.io/discord/564160730845151244?label=discord)](https://appwrite.io/discord)
 
