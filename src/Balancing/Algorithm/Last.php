@@ -12,6 +12,6 @@ class Last extends Algorithm
      */
     public function run(array $options): ?Option
     {
-        return $options[\count($options) - 1] ?? null;
+        return $options[\array_key_last($options)] ?? null;
     }
 }
