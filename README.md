@@ -16,11 +16,11 @@ composer require utopia-php/balancing
 
 require_once '../vendor/autoload.php';
 
-use Utopia\Balancing\Algorithm\RoundRobin;
+use Utopia\Balancing\Algorithm\Random;
 use Utopia\Balancing\Balancing;
 use Utopia\Balancing\Option;
 
-$balancing = new Balancing(new RoundRobin());
+$balancing = new Balancing(new Random());
 
 $balancing->addFilter(fn (Option $option) => $option->getState('online', false) === true);
 

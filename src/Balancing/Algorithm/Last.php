@@ -7,6 +7,11 @@ use Utopia\Balancing\Option;
 
 class Last extends Algorithm
 {
+    public function getName(): string
+    {
+        return "Last";
+    }
+
     /**
      * @param Option[] $options
      */

@@ -7,6 +7,11 @@ use Utopia\Balancing\Option;
 
 class Random extends Algorithm
 {
+    public function getName(): string
+    {
+        return "Random";
+    }
+
     /**
      * @param Option[] $options
      */

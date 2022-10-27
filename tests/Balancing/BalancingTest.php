@@ -14,7 +14,7 @@ class BalancingTest extends TestCase
 {
     public function testBalancing(): void
     {
-        $balancing = new Balancing(new RoundRobin());
+        $balancing = new Balancing(new RoundRobin(-1));
 
         $balancing
             ->addOption(new Option(['hostname' => 'worker-1', 'isOnline' => true, 'cpu' => 80]))
@@ -77,7 +77,7 @@ class BalancingTest extends TestCase
         $this->assertTrue(\in_array($option->getState('dataCenter'), ['fra-1', 'fra-2', 'lon-1']));
         $this->assertTrue(\in_array($option->getState('dataCenter'), ['fra-1', 'fra-2', 'lon-1']));
 
-        $algo = new RoundRobin();
+        $algo = new RoundRobin(-1);
         $option = $algo->run($options) ?? new Option([]);
         $this->assertEquals("fra-1", $option->getState('dataCenter'));
         $option = $algo->run($options) ?? new Option([]);
@@ -92,6 +92,10 @@ class BalancingTest extends TestCase
         $this->assertEquals("lon-1", $option->getState('dataCenter'));
         $option = $algo->run($options) ?? new Option([]);
         $this->assertEquals("fra-1", $option->getState('dataCenter'));
+
+        $algo = new RoundRobin(1);
+        $option = $algo->run($options) ?? new Option([]);
+        $this->assertEquals("lon-1", $option->getState('dataCenter'));
     }
 
     public function testOption(): void
