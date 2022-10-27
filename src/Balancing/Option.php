@@ -23,8 +23,8 @@ class Option
         return $this;
     }
 
-    public function getState(string $key): mixed
+    public function getState(string $key, mixed $default = null): mixed
     {
-        return $this->state[$key] ?? null;
+        return $this->state[$key] ?? $default;
     }
 }
