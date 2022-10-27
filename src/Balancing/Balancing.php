@@ -42,7 +42,7 @@ class Balancing
         }
 
         // TODO: In future allow throwing exception instead of fallback
-        if(\count($options) === 0) {
+        if (\count($options) === 0) {
             $options = $this->options;
         }
 
