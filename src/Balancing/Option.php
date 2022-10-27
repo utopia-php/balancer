@@ -10,11 +10,11 @@ class Option
     private array $state;
 
     /**
-     * @param ?array<string, mixed> $state
+     * @param array<string, mixed> $state
      */
-    public function __construct(?array $state)
+    public function __construct(array $state)
     {
-        $this->state = $state ?? [];
+        $this->state = $state;
     }
 
     public function setState(string $key, mixed $value): self
@@ -26,5 +26,19 @@ class Option
     public function getState(string $key, mixed $default = null): mixed
     {
         return $this->state[$key] ?? $default;
+    }
+
+    public function deleteState(string $key): self
+    {
+        unset($this->state[$key]);
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getStateKeys(): array
+    {
+        return \array_keys($this->state);
     }
 }

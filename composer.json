@@ -10,7 +10,8 @@
     "scripts": {
         "lint": "./vendor/bin/pint --preset psr12 --test",
         "format": "./vendor/bin/pint --preset psr12",
-        "check": "./vendor/bin/phpstan analyse --level max src tests"
+        "check": "./vendor/bin/phpstan analyse --level max src tests",
+        "test": "./vendor/bin/phpunit --configuration phpunit.xml"
     },
     "require": {
         "php": ">=8.0"

@@ -9,7 +9,7 @@ class Balancing
     /**
      * @var callable[]
      */
-    private array $filters;
+    private array $filters = [];
 
     /**
      * @var Option[]
@@ -33,7 +33,7 @@ class Balancing
         return $this;
     }
 
-    public function run(): Option
+    public function run(): ?Option
     {
         $options = $this->options;
 
