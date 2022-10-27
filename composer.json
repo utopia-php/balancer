@@ -1,8 +1,8 @@
 {
     "name": "utopia-php/balancing",
-    "description": "A simple balancing Test library to split traffic between hosts.",
+    "description": "A simple library to balance choices between multiple options.",
     "type": "library",
-    "keywords": ["php","framework", "upf", "utopia", "balancing", "balancer", "proxy", "ab"],
+    "keywords": ["php","framework", "upf", "utopia", "balancing", "balancer"],
     "license": "MIT",
     "autoload": {
         "psr-4": {"Utopia\\Balancing\\": "src/Balancing"}
