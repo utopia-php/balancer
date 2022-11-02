@@ -35,10 +35,10 @@ class Option
     }
 
     /**
-     * @return string[]
+     * @return array<string, mixed> $state
      */
-    public function getStateKeys(): array
+    public function getStates(): array
     {
-        return \array_keys($this->state);
+        return $this->state;
     }
 }
