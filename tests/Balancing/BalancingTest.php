@@ -105,8 +105,8 @@ class BalancingTest extends TestCase
     {
         $option = new Option([]);
 
-        $this->assertIsArray($option->getStateKeys());
-        $this->assertCount(0, $option->getStateKeys());
+        $this->assertIsArray($option->getStates());
+        $this->assertCount(0, $option->getStates());
 
         $this->assertFalse($option->getState("isOnline", false));
         $this->assertNull($option->getState("isOnline"));
@@ -118,13 +118,16 @@ class BalancingTest extends TestCase
 
         $this->assertNull($option->getState("ISONLINE"));
 
-        $this->assertCount(1, $option->getStateKeys());
+        $this->assertCount(1, $option->getStates());
+        $this->assertEquals(true, $option->getStates()['isOnline']);
 
         $option
             ->setState('cpu', 50)
             ->setState('memory', 1800);
 
-        $this->assertCount(3, $option->getStateKeys());
+        $this->assertCount(3, $option->getStates());
+        $this->assertEquals(50, $option->getStates()['cpu']);
+        $this->assertEquals(1800, $option->getStates()['memory']);
         $this->assertTrue($option->getState("isOnline"));
         $this->assertEquals(50, $option->getState("cpu"));
         $this->assertEquals(1800, $option->getState("memory"));
@@ -133,7 +136,7 @@ class BalancingTest extends TestCase
             ->deleteState('isOnline')
             ->deleteState('cpu');
 
-        $this->assertCount(1, $option->getStateKeys());
+        $this->assertCount(1, $option->getStates());
         $this->assertNull($option->getState("isOnline"));
         $this->assertNull($option->getState("cpu"));
         $this->assertEquals(0, $option->getState("cpu", 0));
