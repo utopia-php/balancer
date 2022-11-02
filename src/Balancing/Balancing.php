@@ -21,6 +21,11 @@ class Balancing
         $this->algo = $algo;
     }
 
+    public function getAlgo(): Algorithm
+    {
+        return $this->algo;
+    }
+
     public function addOption(Option $option): self
     {
         $this->options[] = $option;
