@@ -16,6 +16,8 @@ class BalancingTest extends TestCase
     {
         $balancing = new Balancing(new RoundRobin(-1));
 
+        $this->assertInstanceOf(RoundRobin::class, $balancing->getAlgo());
+
         $balancing
             ->addOption(new Option(['hostname' => 'worker-1', 'isOnline' => true, 'cpu' => 80]))
             ->addOption(new Option(['hostname' => 'worker-2', 'isOnline' => false, 'cpu' => 20]))
@@ -53,6 +55,9 @@ class BalancingTest extends TestCase
 
         $option = $balancing->run() ?? new Option([]);
         $this->assertEquals('worker-4', $option->getState('hostname'));
+
+        $balancing = new Balancing(new Random());
+        $this->assertInstanceOf(Random::class, $balancing->getAlgo());
     }
 
     public function testAlgorithms(): void
