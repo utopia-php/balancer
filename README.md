@@ -1,7 +1,7 @@
 # Utopia Balancing
 
-![Build Status](https://github.com/utopia-php/balancing/actions/workflows/tester.yml/badge.svg)
-![Total Downloads](https://img.shields.io/packagist/dt/utopia-php/database.svg)
+[![Build Status](https://github.com/utopia-php/balancing/actions/workflows/tester.yml/badge.svg)](https://github.com/utopia-php/balancing/actions/workflows/tester.yml)
+[![Total Downloads](https://img.shields.io/packagist/dt/utopia-php/database.svg)](https://packagist.org/packages/utopia-php/balancing)
 [![Discord](https://img.shields.io/discord/564160730845151244?label=discord)](https://appwrite.io/discord)
 
 Utopia Balancing library is simple and lite library for balancingchoices between multiple options. This library is aiming to be as simple and easy to learn and use. This library is maintained by the [Appwrite team](https://appwrite.io).
