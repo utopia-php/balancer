@@ -1,6 +1,6 @@
 <?php
 
-namespace Utopia\Balancing;
+namespace Utopia\Balancer;
 
 class Option
 {

@@ -3,61 +3,62 @@
 namespace Utopia\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Utopia\Balancing\Algorithm\First;
-use Utopia\Balancing\Algorithm\Last;
-use Utopia\Balancing\Algorithm\Random;
-use Utopia\Balancing\Algorithm\RoundRobin;
-use Utopia\Balancing\Balancing;
-use Utopia\Balancing\Option;
+use Utopia\Balancer\Algorithm\First;
+use Utopia\Balancer\Algorithm\Last;
+use Utopia\Balancer\Algorithm\Random;
+use Utopia\Balancer\Algorithm\RoundRobin;
+use Utopia\Balancer\Balancer;
+use Utopia\Balancer\Group;
+use Utopia\Balancer\Option;
 
-class BalancingTest extends TestCase
+class BalancerTest extends TestCase
 {
-    public function testBalancing(): void
+    public function testBalancer(): void
     {
-        $balancing = new Balancing(new RoundRobin(-1));
+        $balancer = new Balancer(new RoundRobin(-1));
 
-        $this->assertInstanceOf(RoundRobin::class, $balancing->getAlgo());
+        $this->assertInstanceOf(RoundRobin::class, $balancer->getAlgo());
 
-        $balancing
+        $balancer
             ->addOption(new Option(['hostname' => 'worker-1', 'isOnline' => true, 'cpu' => 80]))
             ->addOption(new Option(['hostname' => 'worker-2', 'isOnline' => false, 'cpu' => 20]))
             ->addOption(new Option(['hostname' => 'worker-3', 'isOnline' => true, 'cpu' => 35]));
 
-        $option = $balancing->run() ?? new Option([]);
+        $option = $balancer->run() ?? new Option([]);
         $this->assertEquals('worker-1', $option->getState('hostname'));
 
-        $balancing->addFilter(fn ($option) => $option->getState('isOnline') === true);
+        $balancer->addFilter(fn ($option) => $option->getState('isOnline') === true);
 
-        $option = $balancing->run() ?? new Option([]);
+        $option = $balancer->run() ?? new Option([]);
         $this->assertEquals('worker-3', $option->getState('hostname'));
 
-        $option = $balancing->run() ?? new Option([]);
+        $option = $balancer->run() ?? new Option([]);
         $this->assertEquals('worker-1', $option->getState('hostname'));
 
-        $balancing->addFilter(fn ($option) => $option->getState('cpu') < 50);
+        $balancer->addFilter(fn ($option) => $option->getState('cpu') < 50);
 
-        $option = $balancing->run() ?? new Option([]);
+        $option = $balancer->run() ?? new Option([]);
         $this->assertEquals('worker-3', $option->getState('hostname'));
 
-        $option = $balancing->run() ?? new Option([]);
+        $option = $balancer->run() ?? new Option([]);
         $this->assertEquals('worker-3', $option->getState('hostname'));
 
-        $option = $balancing->run() ?? new Option([]);
+        $option = $balancer->run() ?? new Option([]);
         $this->assertEquals('worker-3', $option->getState('hostname'));
 
-        $balancing->addOption(new Option(['hostname' => 'worker-4', 'isOnline' => true, 'cpu' => 5]));
+        $balancer->addOption(new Option(['hostname' => 'worker-4', 'isOnline' => true, 'cpu' => 5]));
 
-        $option = $balancing->run() ?? new Option([]);
+        $option = $balancer->run() ?? new Option([]);
         $this->assertEquals('worker-4', $option->getState('hostname'));
 
-        $option = $balancing->run() ?? new Option([]);
+        $option = $balancer->run() ?? new Option([]);
         $this->assertEquals('worker-3', $option->getState('hostname'));
 
-        $option = $balancing->run() ?? new Option([]);
+        $option = $balancer->run() ?? new Option([]);
         $this->assertEquals('worker-4', $option->getState('hostname'));
 
-        $balancing = new Balancing(new Random());
-        $this->assertInstanceOf(Random::class, $balancing->getAlgo());
+        $balancer = new Balancer(new Random());
+        $this->assertInstanceOf(Random::class, $balancer->getAlgo());
     }
 
     public function testAlgorithms(): void
@@ -146,5 +147,62 @@ class BalancingTest extends TestCase
         $this->assertNull($option->getState("cpu"));
         $this->assertEquals(0, $option->getState("cpu", 0));
         $this->assertEquals(1800, $option->getState("memory"));
+    }
+
+    public function testGroup(): void
+    {
+        $options = [
+            new Option([ 'dataCenter' => 'fra-1', 'cpu' => 91, 'online' => false ]),
+            new Option([ 'dataCenter' => 'fra-2', 'cpu' => 95, 'online' => false ]),
+            new Option([ 'dataCenter' => 'lon-1', 'cpu' => 87, 'online' => true ]),
+        ];
+
+        // Allow only online and low-cpu options
+        $balancer1 = new Balancer(new First());
+        $balancer1->addFilter(fn ($option) => $option->getState('cpu') < 80);
+        $balancer1->addFilter(fn ($option) => $option->getState('online') === true);
+
+        // Allow only online
+        $balancer2 = new Balancer(new First());
+        $balancer2->addFilter(fn ($option) => $option->getState('online') === true);
+
+        // Allow anything
+        $balancer3 = new Balancer(new First());
+
+        foreach ($options as $option) {
+            $balancer1->addOption($option);
+            $balancer2->addOption($option);
+            $balancer3->addOption($option);
+        }
+
+        $group = new Group();
+        $group->add($balancer1);
+
+        $this->assertNull($group->run());
+
+        $group = new Group();
+        $group
+            ->add($balancer1)
+            ->add($balancer2);
+
+        $option = $group->run() ?? new Option([]);
+        $this->assertEquals('lon-1', $option->getState('dataCenter'));
+
+        $group = new Group();
+        $group
+            ->add($balancer1)
+            ->add($balancer3);
+
+        $option = $group->run() ?? new Option([]);
+        $this->assertEquals('fra-1', $option->getState('dataCenter'));
+
+        $group = new Group();
+        $group
+            ->add($balancer1)
+            ->add($balancer2)
+            ->add($balancer3);
+
+        $option = $group->run() ?? new Option([]);
+        $this->assertEquals('lon-1', $option->getState('dataCenter'));
     }
 }
