@@ -17,7 +17,9 @@ composer require utopia-php/balancer
 
 Balancer supports multiple algorithms. Each picks option differently, and may have different set of methods available for configuration.
 
-### 1. Random
+### Balancer Algorithms
+
+1. Random
 
 `Random` algorithm pick option randomly. The same option could be picked multiple times in a row. Example:
 
@@ -109,6 +111,7 @@ var_dump($balancer->run()); // fra-2
 When using `RoundRobin` in concurrency model, make sure to store index in atomic way. Example:
 
 ```php
+<?php
 
 require_once '../vendor/autoload.php';
 
@@ -135,6 +138,54 @@ function onRequest() {
     $atomic->cmpset($lastIndex, $algo->getIndex());
 }
 ```
+
+### Balancer Group
+
+If balancer filters cause balancer to have no options to pick from, `null` will be returned. More often then not, you will need a backup logic for this scenario. You can use `Group` to create a group of multiple balancers and if one fails, next can be used as fallback. Notice `Group` tries balances in order you added them.
+
+```php
+<?php
+
+require_once '../vendor/autoload.php';
+
+use Utopia\Balancer\Algorithm\First;
+use Utopia\Balancer\Balancer;
+use Utopia\Balancer\Group;
+use Utopia\Balancer\Option;
+
+// Prepare options where each has high CPU load
+$options = [
+    new Option([ 'dataCenter' => 'fra-1', 'cpu' => 91 ]),
+    new Option([ 'dataCenter' => 'fra-2', 'cpu' => 95 ]),
+    new Option([ 'dataCenter' => 'lon-1', 'cpu' => 87 ]),
+];
+
+// Prepare balancer that allows only low CPU load options
+$balancer1 = new Balancer(new First());
+$balancer1->addFilter(fn ($option) => $option->getState('cpu') < 80);
+
+// Prepare balancer that allows all options
+$balancer2 = new Balancer(new First());
+
+// Add options to both balancers
+foreach ($options as $option) {
+    $balancer1->addOption($option);
+    $balancer2->addOption($option);
+}
+
+// Prepare group with both balancers
+$group = new Group();
+$group
+    ->add($balancer1)
+    ->add($balancer2);
+
+// Run group to get option
+$option = $group->run() ?? new Option([]);
+
+\var_dump($option);
+// We got fra-1 option. First balancer filtered out all options, but second balancer allowed any, and First algorithm picked first option
+```
+
 ## System Requirements
 
 Utopia Framework requires PHP 8.0 or later. We recommend using the latest PHP version whenever possible.
