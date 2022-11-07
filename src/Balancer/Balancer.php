@@ -1,8 +1,8 @@
 <?php
 
-namespace Utopia\Balancing;
+namespace Utopia\Balancer;
 
-class Balancing
+class Balancer
 {
     private Algorithm $algo;
 
@@ -44,11 +44,6 @@ class Balancing
 
         foreach ($this->filters as $filter) {
             $options = \array_filter($options, $filter);
-        }
-
-        // TODO: In future allow throwing exception instead of fallback
-        if (\count($options) === 0) {
-            $options = $this->options;
         }
 
         return $this->algo->run($options);

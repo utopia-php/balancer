@@ -1,9 +1,9 @@
 <?php
 
-namespace Utopia\Balancing\Algorithm;
+namespace Utopia\Balancer\Algorithm;
 
-use Utopia\Balancing\Algorithm;
-use Utopia\Balancing\Option;
+use Utopia\Balancer\Algorithm;
+use Utopia\Balancer\Option;
 
 class Last extends Algorithm
 {

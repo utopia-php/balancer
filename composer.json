@@ -1,11 +1,11 @@
 {
-    "name": "utopia-php/balancing",
+    "name": "utopia-php/balancer",
     "description": "A simple library to balance choices between multiple options.",
     "type": "library",
-    "keywords": ["php","framework", "upf", "utopia", "balancing", "balancer"],
+    "keywords": ["php","framework", "upf", "utopia", "balancer", "balancing", "balancer"],
     "license": "MIT",
     "autoload": {
-        "psr-4": {"Utopia\\Balancing\\": "src/Balancing"}
+        "psr-4": {"Utopia\\Balancer\\": "src/Balancer"}
     },
     "scripts": {
         "lint": "./vendor/bin/pint --preset psr12 --test",
