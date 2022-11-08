@@ -48,6 +48,10 @@ class Balancer
 
         $options = \array_values($options);
 
+        if (\count($options) === 0) {
+            return null;
+        }
+
         return $this->algo->run($options);
     }
 }
