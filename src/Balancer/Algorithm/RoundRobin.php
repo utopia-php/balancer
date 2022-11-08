@@ -39,11 +39,11 @@ class RoundRobin extends Algorithm
 
         $option = null;
 
-        if (\count($options) === $this->index) {
-            $option = $options[0];
-            $this->index = 0;
-        } else {
+        if (\array_key_exists($this->index, $options)) {
             $option = $options[$this->index];
+        } else {
+            $option = $options[0] ?? null;
+            $this->index = 0;
         }
 
         return $option;
