@@ -46,6 +46,8 @@ class Balancer
             $options = \array_filter($options, $filter);
         }
 
+        $options = \array_values($options);
+
         return $this->algo->run($options);
     }
 }

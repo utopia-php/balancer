@@ -37,14 +37,13 @@ class RoundRobin extends Algorithm
     {
         $this->index++;
 
-        $keys = \array_keys($options);
         $option = null;
 
         if (\count($options) === $this->index) {
-            $option = $options[$keys[0]];
+            $option = $options[0];
             $this->index = 0;
         } else {
-            $option = $options[$keys[$this->index]];
+            $option = $options[$this->index];
         }
 
         return $option;
